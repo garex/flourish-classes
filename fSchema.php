@@ -2560,7 +2560,6 @@ class fSchema
 	 */
 	public function getKeys($table, $key_type=NULL)
 	{
-		$table           = strtolower($table);
 		$valid_key_types = array('primary', 'foreign', 'unique');
 		if ($key_type !== NULL && !in_array($key_type, $valid_key_types)) {
 			throw new fProgrammerException(
@@ -2658,8 +2657,6 @@ class fSchema
 	 */
 	public function getRelationships($table, $relationship_type=NULL)
 	{
-		$table = strtolower($table);
-
 		$valid_relationship_types = array('one-to-one', 'many-to-one', 'one-to-many', 'many-to-many');
 		if ($relationship_type !== NULL && !in_array($relationship_type, $valid_relationship_types)) {
 			throw new fProgrammerException(
