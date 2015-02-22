@@ -3075,7 +3075,6 @@ class fSchema
 	 */
 	public function setColumnInfoOverride($column_info, $table, $column=NULL)
 	{
-		$table = strtolower($table);
 		if ($column !== NULL) {
 			$column = strtolower($column);
 		}
@@ -3105,8 +3104,6 @@ class fSchema
 	 */
 	public function setKeysOverride($keys, $table, $key_type=NULL)
 	{
-		$table = strtolower($table);
-
 		$valid_key_types = array('primary', 'foreign', 'unique');
 		if (!in_array($key_type, $valid_key_types)) {
 			throw new fProgrammerException(
