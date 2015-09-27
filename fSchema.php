@@ -3065,7 +3065,7 @@ class fSchema
 	 *  - `'timestamp'`
 	 *  - `'varchar'`
 	 *
-	 * @param  array  $column_info  The modified column info - see method description for format
+	 * @param  array|null  $column_info  The modified column info - see method description for format
 	 * @param  string $table        The table to override
 	 * @param  string $column       The column to override
 	 * @return void
