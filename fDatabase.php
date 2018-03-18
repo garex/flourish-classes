@@ -280,6 +280,13 @@ class fDatabase
 
 
 	/**
+	 * The charset to use when operating in DB.
+	 *
+	 * @var string
+	 */
+	private $charset;
+
+	/**
 	 * Configures the connection to a database - connection is not made until the first query is executed
 	 *
 	 * Passing `NULL` to any parameter other than `$type` and `$database` will
@@ -294,7 +301,7 @@ class fDatabase
 	 * @param  integer $timeout   The number of seconds to timeout after if a connection can not be made - not used for SQLite
 	 * @return fDatabase
 	 */
-	public function __construct($type, $database, $username=NULL, $password=NULL, $host=NULL, $port=NULL, $timeout=NULL)
+	public function __construct($type, $database, $username=NULL, $password=NULL, $host=NULL, $port=NULL, $timeout=NULL, $charset=NULL)
 	{
 		$valid_types = array('db2', 'mssql', 'mysql', 'oracle', 'postgresql', 'sqlite');
 		if (!in_array($type, $valid_types)) {
@@ -312,6 +319,9 @@ class fDatabase
 		if ($host === NULL) {
 			$host = 'localhost';
 		}
+		if (empty($charset)) {
+		    $charset = 'utf8';
+		}
 
 		$this->type     = $type;
 		$this->database = $database;
@@ -320,6 +330,7 @@ class fDatabase
 		$this->host     = $host;
 		$this->port     = $port;
 		$this->timeout  = $timeout;
+		$this->charset  = $charset;
 
 		$this->hook_callbacks = array(
 			'unmodified' => array(),
@@ -683,7 +694,7 @@ class fDatabase
 				$this->connection = FALSE;
 			}
 
-			if ($this->connection && function_exists('mysql_set_charset') && !mysql_set_charset('utf8', $this->connection)) {
+			if ($this->connection && function_exists('mysql_set_charset') && !mysql_set_charset($this->charset, $this->connection)) {
                 throw new fConnectivityException(
                 	'There was an error setting the database connection to use UTF-8'
 				);
@@ -715,7 +726,7 @@ class fDatabase
 
 			$errors = fCore::stopErrorCapture();
 
-			if ($this->connection && function_exists('mysqli_set_charset') && !mysqli_set_charset($this->connection, 'utf8')) {
+			if ($this->connection && function_exists('mysqli_set_charset') && !mysqli_set_charset($this->connection, $this->charset)) {
                 throw new fConnectivityException(
                 	'There was an error setting the database connection to use UTF-8'
                 );
@@ -801,8 +812,8 @@ class fDatabase
 		// Make MySQL act more strict and use UTF-8
 		if ($this->type == 'mysql') {
 			$this->execute("SET SQL_MODE = 'REAL_AS_FLOAT,PIPES_AS_CONCAT,ANSI_QUOTES,IGNORE_SPACE'");
-			$this->execute("SET CHARACTER SET utf8");
-			$this->execute("SET NAMES 'utf8'");
+			$this->execute("SET CHARACTER SET $this->charset");
+			$this->execute("SET NAMES '$this->charset'");
 		}
 
 		// Make SQLite behave like other DBs for assoc arrays
