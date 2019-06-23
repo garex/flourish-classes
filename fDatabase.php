@@ -1403,7 +1403,7 @@ class fDatabase
 							// so instead store a ?
 							default:
 								$output .= '?';
-								continue;
+								continue 2;
 						}
 						if ($last_type == 'nchar') {
 							$output .= '+';
